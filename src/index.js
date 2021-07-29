@@ -67,7 +67,7 @@ class Game extends React.Component {
     }
     squares[i] = this.state.xIsNext ? "X" : "O";
     this.setState({
-      //concat(): 기존 배열 수정 x
+      //concat(): 기존 배열 수정 X
       history: history.concat([
         {
           squares: squares,
