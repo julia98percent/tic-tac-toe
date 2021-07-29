@@ -49,3 +49,7 @@ ul {
 .game-info {
   margin-left: 20px;
 }
+.moves-button:focus {
+  font-weight: bold;
+  border: 3px solid indianred;
+}
