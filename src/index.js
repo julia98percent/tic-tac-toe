@@ -50,6 +50,7 @@ class Game extends React.Component {
       history: [
         {
           squares: Array(9).fill(null),
+          lastIndex: -1,
         },
       ],
       stepNumber: 0,
@@ -62,15 +63,18 @@ class Game extends React.Component {
     const current = history[history.length - 1];
     //사본 배열 생성
     const squares = current.squares.slice();
+    const lastIndex = i;
     if (calculateWinner(squares) || squares[i]) {
       return;
     }
     squares[i] = this.state.xIsNext ? "X" : "O";
+
     this.setState({
       //concat(): 기존 배열 수정 x
       history: history.concat([
         {
           squares: squares,
+          lastIndex: lastIndex,
         },
       ]),
       stepNumber: history.length,
@@ -90,7 +94,15 @@ class Game extends React.Component {
     const winner = calculateWinner(current.squares);
 
     const moves = history.map((step, move) => {
-      const desc = move ? "Go to move #" + move : "Go to game start";
+      const desc = move
+        ? "Go to move #" +
+          move +
+          " (" +
+          parseInt(step.lastIndex / 3) +
+          "," +
+          (step.lastIndex % 3) +
+          ")"
+        : "Go to game start";
       return (
         <li key={move}>
           <button onClick={() => this.jumpTo(move)}>{desc}</button>
