@@ -48,6 +48,7 @@ class Game extends React.Component {
       ],
       stepNumber: 0,
       xIsNext: true,
+      isAsc: true,
     };
   }
 
@@ -80,6 +81,13 @@ class Game extends React.Component {
       xIsNext: step % 2 === 0,
     });
   }
+  setAsc() {
+    this.setState({
+      history: this.state.history.reverse(),
+      isAsc: !this.state.isAsc,
+    });
+    console.log(this.state.history);
+  }
 
   render() {
     const history = this.state.history;
@@ -87,19 +95,20 @@ class Game extends React.Component {
     const winner = calculateWinner(current.squares);
 
     const moves = history.map((step, move) => {
-      const desc = move
-        ? "Go to move #" +
-          move +
-          " (" +
-          parseInt(step.lastIndex / 3) +
-          "," +
-          (step.lastIndex % 3) +
-          ")"
-        : "Go to game start";
+      const item =
+        step.lastIndex >= 0
+          ? "Go to move #" +
+            move +
+            " (" +
+            parseInt(step.lastIndex / 3) +
+            "," +
+            (step.lastIndex % 3) +
+            ")"
+          : "Go to game start";
       return (
         <li key={move}>
           <button className="moves-button" onClick={() => this.jumpTo(move)}>
-            {desc}
+            {item}
           </button>
         </li>
       );
@@ -122,6 +131,9 @@ class Game extends React.Component {
         </div>
         <div className="game-info">
           <div>{status}</div>
+          <button onClick={() => this.setAsc()}>
+            {this.state.isAsc ? "오름차순" : "내림차순"}
+          </button>
           <ol>{moves}</ol>
         </div>
       </div>
