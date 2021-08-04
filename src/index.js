@@ -83,18 +83,19 @@ class Game extends React.Component {
   }
   setAsc() {
     this.setState({
-      history: this.state.history.reverse(),
+      // history: this.state.history.reverse(),
       isAsc: !this.state.isAsc,
     });
-    console.log(this.state.history);
+    // console.log(this.state.history);
   }
 
   render() {
-    const history = this.state.history;
+    let history = this.state.history;
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
-
+    if (!this.state.isAsc) history = history.slice().reverse();
     const moves = history.map((step, move) => {
+      move = this.state.isAsc ? move : history.length - 1 - move;
       const item =
         step.lastIndex >= 0
           ? "Go to move #" +
@@ -134,7 +135,7 @@ class Game extends React.Component {
           <button onClick={() => this.setAsc()}>
             {this.state.isAsc ? "오름차순" : "내림차순"}
           </button>
-          <ol>{moves}</ol>
+          <ol {...(this.state.isAsc ? {} : { reversed: true })}>{moves}</ol>
         </div>
       </div>
     );
