@@ -59,9 +59,18 @@ class Game extends React.Component {
     const squares = current.squares.slice();
     const lastIndex = i;
     if (calculateWinner(squares) || squares[i]) {
+      //이미 winner가 나왔거나 이미 선택된 사각형일 때
       return;
     }
     squares[i] = this.state.xIsNext ? "X" : "O";
+
+    if (calculateWinner(squares)) {
+      let temp = calculateWinner(squares).where;
+      let elements = document.getElementsByClassName("square");
+      for (let i = 0; i < elements.length; i++) {
+        if (temp.includes(i)) elements[i].classList.add("colored");
+      }
+    }
 
     this.setState({
       //concat(): 기존 배열 수정 x
@@ -76,6 +85,7 @@ class Game extends React.Component {
     });
   }
   jumpTo(step) {
+    console.log(step);
     this.setState({
       stepNumber: step,
       xIsNext: step % 2 === 0,
@@ -83,16 +93,15 @@ class Game extends React.Component {
   }
   setAsc() {
     this.setState({
-      // history: this.state.history.reverse(),
       isAsc: !this.state.isAsc,
     });
-    // console.log(this.state.history);
   }
 
   render() {
     let history = this.state.history;
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
+
     if (!this.state.isAsc) history = history.slice().reverse();
     const moves = history.map((step, move) => {
       move = this.state.isAsc ? move : history.length - 1 - move;
@@ -117,7 +126,7 @@ class Game extends React.Component {
 
     let status;
     if (winner) {
-      status = "Winner: " + winner;
+      status = "Winner: " + winner.who;
     } else {
       status = "Next player: " + (this.state.xIsNext ? "X" : "O");
     }
@@ -156,7 +165,7 @@ function calculateWinner(squares) {
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+      return { who: squares[a], where: [a, b, c] };
     }
   }
   return null;
