@@ -4,7 +4,10 @@ import "./index.css";
 
 function Square(props) {
   return (
-    <button className="square" onClick={props.onClick}>
+    <button
+      className={"square " + (props.val_color ? "colored" : "")}
+      onClick={props.onClick}
+    >
       {props.value}
     </button>
   );
@@ -16,6 +19,7 @@ class Board extends React.Component {
       <Square
         value={this.props.squares[i]}
         onClick={() => this.props.onClick(i)}
+        val_color={this.props.colored[i]}
       />
     );
   }
@@ -44,6 +48,7 @@ class Game extends React.Component {
         {
           squares: Array(9).fill(null),
           lastIndex: -1,
+          colored: Array(9).fill(false),
         },
       ],
       stepNumber: 0,
@@ -57,6 +62,7 @@ class Game extends React.Component {
     const current = history[history.length - 1];
     //사본 배열 생성
     const squares = current.squares.slice();
+    const colored = current.colored.slice();
     const lastIndex = i;
     if (calculateWinner(squares) || squares[i]) {
       //이미 winner가 나왔거나 이미 선택된 사각형일 때
@@ -65,10 +71,10 @@ class Game extends React.Component {
     squares[i] = this.state.xIsNext ? "X" : "O";
 
     if (calculateWinner(squares)) {
+      //결과가 나왔을 때
       let temp = calculateWinner(squares).where;
-      let elements = document.getElementsByClassName("square");
-      for (let i = 0; i < elements.length; i++) {
-        if (temp.includes(i)) elements[i].classList.add("colored");
+      for (let i = 0; i < temp.length; i++) {
+        colored[temp[i]] = true;
       }
     }
 
@@ -78,19 +84,21 @@ class Game extends React.Component {
         {
           squares: squares,
           lastIndex: lastIndex,
+          colored: colored,
         },
       ]),
       stepNumber: history.length,
       xIsNext: !this.state.xIsNext,
     });
   }
+
   jumpTo(step) {
-    console.log(step);
     this.setState({
       stepNumber: step,
       xIsNext: step % 2 === 0,
     });
   }
+
   setAsc() {
     this.setState({
       isAsc: !this.state.isAsc,
@@ -137,6 +145,7 @@ class Game extends React.Component {
           <Board
             squares={current.squares}
             onClick={(i) => this.handleClick(i)}
+            colored={current.colored}
           />
         </div>
         <div className="game-info">
