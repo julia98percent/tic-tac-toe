@@ -2,6 +2,16 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 
+function NumOfSpace() {
+  return (
+    <select name="numSelect">
+      <option value="">칸 수 선택</option>
+      <option value="학생">3 X 3</option>
+      <option value="회사원">4 X 4</option>
+      <option value="기타">5 X 5</option>
+    </select>
+  );
+}
 function Square(props) {
   return (
     <button
@@ -154,6 +164,7 @@ class Game extends React.Component {
           <button onClick={() => this.setAsc()}>
             {this.state.isAsc ? "오름차순" : "내림차순"}
           </button>
+          <NumOfSpace />
           <ol {...(this.state.isAsc ? {} : { reversed: true })}>{moves}</ol>
         </div>
       </div>
